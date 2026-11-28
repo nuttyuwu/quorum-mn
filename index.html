@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Quorum — Монголд бүтээсэн программ хангамж</title>
   <meta name="description" content="Өдөржин мэдээлэл хуулж суух ажлыг хэдхэн мөр кодоор шийдэж болно. Бид ийм давтагддаг ажлыг автоматжуулах программ бүтээдэг.">
-  <meta name="theme-color" content="#16316e">
+  <meta name="theme-color" content="#000000">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Quorum — Монголд бүтээсэн программ хангамж">
   <meta property="og:description" content="Өдөржин мэдээлэл хуулж суух ажлыг хэдхэн мөр кодоор шийдэж болно. Бид ийм давтагддаг ажлыг автоматжуулах программ бүтээдэг.">
@@ -16,8 +16,8 @@
   <link rel="alternate" hreflang="en" href="https://quorum.mn/en/">
   <link rel="alternate" hreflang="x-default" href="https://quorum.mn/">
   <link rel="icon" href="./assets/quorum.png?v=2" type="image/png">
-  <link rel="stylesheet" href="./assets/site.css?v=dial1">
-  <script src="./assets/dial.js?v=dial1" defer></script>
+  <link rel="stylesheet" href="./assets/site.css?v=brass1">
+  <script src="./assets/site.js?v=brass1" defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#content">Үндсэн хэсэг рүү очих</a>
@@ -25,12 +25,11 @@
     <div class="wrap mast-inner">
       <a class="wordmark" href="./"><img src="./assets/wordmark.webp" alt="Quorum" width="504" height="121"></a>
       <nav class="main-nav" aria-label="Үндсэн цэс">
-        <a href="#story">Бидний тухай</a><a href="#store">Дэлгүүр</a><a href="#support">Тусламж</a>
+        <a href="./#story">Бидний тухай</a><a href="./#store">Дэлгүүр</a><a href="./support/" aria-current="false">Тусламж</a>
       </nav>
-      <nav class="languages" aria-label="Хэл сонгох">
-        <a href="./" lang="mn" hreflang="mn" aria-label="Монгол" aria-current="page">МН</a>
-        <a href="./en/" lang="en" hreflang="en" aria-label="English" aria-current="false">EN</a>
-      </nav>
+      <a class="lang-switch" href="./en/" hreflang="en" lang="en" aria-label="English">
+        <i class="knob" aria-hidden="true"></i><span aria-hidden="true">МН</span><span aria-hidden="true">EN</span>
+      </a>
     </div>
   </header>
   <main id="content">
@@ -55,31 +54,35 @@
         <article><h3>Бидний зорилго</h3><p>Хүмүүс шийдвэрээ яаралгүй гаргаж, хамт ажилладаг хүндээ туслах завтай байгаасай гэж бид хүсдэг.</p></article>
       </div>
     </section>
-    <figure class="place">
-      <div class="aperture">
-        <picture>
-          <source media="(max-width: 620px)" srcset="./assets/gobi-small.webp">
-          <img src="./assets/gobi.webp" width="1920" height="1080" alt="Хонгорын элсний өндөр манхны оройгоор хоёр аялагч алхаж байна." loading="lazy">
-        </picture>
+    <figure class="sheet wrap">
+      <figcaption>
+        <ol class="steps">
+          <li>Гараар хийж буй ажлыг ажиглана</li>
+          <li>Давтагдах хэсгийг автоматжуулна</li>
+          <li>Хүн үр дүнг шалгана</li>
+        </ol>
+      </figcaption>
+      <div class="ledger" aria-hidden="true">
+        <table>
+          <thead><tr><th>№</th><th>Огноо</th><th>Нэхэмжлэх</th><th>Дүн, ₮</th><th>Шалгасан</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
-      <figcaption class="wrap"><a href="https://commons.wikimedia.org/wiki/File:Hiking_in_Khongoryn_Els_(Unsplash).jpg">Хонгорын элс, Монгол <span aria-hidden="true">↗</span></a></figcaption>
     </figure>
-    <div class="destinations wrap">
-      <section id="store" class="destination store" aria-labelledby="shop-title">
+    <section id="store" class="store wrap" aria-labelledby="shop-title">
+      <div>
         <svg class="intel-dial" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8"/><circle cx="16" cy="16" r="9"/><path d="M16 7v3m9 6h-3M16 25v-3M7 16h3"/><path class="needle" d="M16 16l5-5"/><circle class="pivot" cx="16" cy="16" r="2"/></svg>
         <h2 id="shop-title">Intel Quorum</h2>
+      </div>
+      <div>
         <p>Quorum-ийн дижитал хэрэгсэл, алхам алхмаар тайлбарласан гарын авлагуудыг эндээс үзээрэй.</p>
-        <a class="text-link" href="https://intel.quorum.mn/">Дэлгүүрт зочлох <span aria-hidden="true">↗</span></a>
-      </section>
-      <section id="support" class="destination support" aria-labelledby="support-title">
-        <h2 id="support-title">Танд юугаар туслах вэ?</h2>
-        <p>Бүтээгдэхүүн, захиалгын талаар асуух зүйл байвал манай багт имэйл бичээрэй.</p>
-        <a class="text-link" href="mailto:support@quorum.mn">support@quorum.mn</a>
-      </section>
-    </div>
+        <a class="button" href="https://intel.quorum.mn/">Дэлгүүрт зочлох<span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
   </main>
   <footer class="wrap footer">
-    <a class="wordmark" href="#top"><img src="./assets/wordmark.webp" width="504" height="121" alt="Quorum"></a>
+    <a class="wordmark" href="./"><img src="./assets/wordmark.webp" width="504" height="121" alt="Quorum"></a>
     <a class="text-link" href="#top">Дээш буцах <span aria-hidden="true">↑</span></a>
   </footer>
 </body>

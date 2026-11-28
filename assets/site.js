@@ -1,12 +1,13 @@
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // Hero dial: one day as 288 five-minute ticks. On load the hand sweeps once and every
-// tick it passes turns sand, the day handed back. Afterwards the hand follows a mouse.
+// tick it passes turns brass, the day handed back. Afterwards the hand follows a mouse.
 (() => {
   const canvas = document.querySelector('.hero .dial');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const css = getComputedStyle(document.documentElement);
-  const [STEEL, DUNE, LUME] = ['--steel', '--dune', '--lume'].map(n => css.getPropertyValue(n).trim());
+  const [MUTED, BRASS, LUME] = ['--muted', '--brass', '--lume'].map(n => css.getPropertyValue(n).trim());
   const TICKS = 288, TAU = Math.PI * 2, SWEEP_AT = 650, SWEEP_FOR = 2600;
   const ease = t => t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
   const clamp = t => Math.min(1, Math.max(0, t));
@@ -33,12 +34,12 @@
       ctx.lineTo(c + x * (R - len), c + y * (R - len));
       ctx.lineWidth = hour ? 2 : 1.25;
       const back = sweep >= 1 || a <= swept;
-      ctx.strokeStyle = back ? DUNE : STEEL;
-      ctx.globalAlpha = back ? 1 : .38;
+      ctx.strokeStyle = back ? BRASS : MUTED;
+      ctx.globalAlpha = back ? 1 : .45;
       ctx.stroke();
       if (near) { ctx.strokeStyle = LUME; ctx.globalAlpha = near; ctx.stroke(); }
     }
-    ctx.fillStyle = STEEL;
+    ctx.fillStyle = MUTED;
     ctx.font = `340 ${Math.round(s * .034)}px "Noto Serif Display", Georgia, serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -50,7 +51,7 @@
     // The hand copies the Q's stem: a straight line ending in a ball.
     ctx.globalAlpha = clamp(grow * 2 - .4);
     const hx = Math.sin(hand), hy = -Math.cos(hand), tip = R - s * .075;
-    ctx.strokeStyle = ctx.fillStyle = DUNE;
+    ctx.strokeStyle = ctx.fillStyle = BRASS;
     ctx.lineWidth = Math.max(1.5, s * .006);
     ctx.beginPath();
     ctx.moveTo(c - hx * s * .05, c - hy * s * .05);
@@ -99,4 +100,59 @@
     });
   }
   kick();
+})();
+
+// Ledger: two rows typed by hand, the rest filled at once by software, then a person
+// checks each row. Plays once when the table scrolls into view.
+(() => {
+  const sheet = document.querySelector('.sheet');
+  if (!sheet) return;
+  const steps = [...sheet.querySelectorAll('.steps li')];
+  const ledger = sheet.querySelector('.ledger');
+  const money = new Intl.NumberFormat('en-US');
+  const BY_HAND = 2;
+  const rows = Array.from({ length: 10 }, (_, i) => {
+    const tr = ledger.querySelector('tbody').insertRow();
+    const values = [`2026-11-${String(3 + (i >> 2)).padStart(2, '0')}`, `№ ${1412 + i}`, money.format((i * 37 % 23 + 4) * 42500)];
+    tr.insertCell().textContent = String(i + 1).padStart(2, '0');
+    const cells = values.map(() => tr.insertCell());
+    const ok = tr.insertCell();
+    ok.className = 'ok';
+    return { tr, values, cells, ok };
+  });
+  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const fill = row => row.cells.forEach((td, k) => { td.textContent = row.values[k]; });
+  const step = (n, p = 1) => steps.forEach((li, k) => {
+    li.classList.toggle('now', k === n);
+    li.classList.toggle('done', k < n);
+    li.style.setProperty('--p', k < n ? 1 : k === n ? p : 0);
+  });
+
+  if (still) { rows.forEach(row => { fill(row); row.ok.classList.add('on'); }); step(3); return; }
+
+  async function play() {
+    const hand = rows.slice(0, BY_HAND), auto = rows.slice(BY_HAND);
+    const total = hand.reduce((n, row) => n + row.values.join('').length, 0);
+    let typed = 0;
+    step(0, 0);
+    for (const row of hand) {
+      row.tr.classList.add('now');
+      for (const [k, td] of row.cells.entries()) {
+        td.classList.add('typing');
+        for (const ch of row.values[k]) { td.textContent += ch; step(0, ++typed / total); await wait(55 + Math.random() * 75); }
+        td.classList.remove('typing');
+        await wait(240);
+      }
+      row.tr.classList.remove('now');
+    }
+    await wait(450);
+    for (const [i, row] of auto.entries()) { fill(row); row.tr.classList.add('auto'); step(1, (i + 1) / auto.length); await wait(45); }
+    await wait(700);
+    for (const [i, row] of rows.entries()) { row.ok.classList.add('on'); step(2, (i + 1) / rows.length); await wait(110); }
+    await wait(300);
+    step(3);
+  }
+  new IntersectionObserver(([entry], io) => {
+    if (entry.isIntersecting) { io.disconnect(); play(); }
+  }, { threshold: .5 }).observe(ledger);
 })();
